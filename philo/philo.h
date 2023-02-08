@@ -17,19 +17,12 @@
 # include <pthread.h>
 # include <stdlib.h>
 
-typedef struct s_forks
-{
-	int	left;
-	int	right;
-}				t_forks;
-
-
 typedef struct s_philosopher
 {
-	int		id;
-	t_forks	forks;
+	int			id;
+	pthread_t	thread;
+	int			fork;
 }				t_philosopher;
-
 
 typedef struct s_data
 {
@@ -40,6 +33,5 @@ typedef struct s_data
 	int				required_eating_amount;
 	t_philosopher	*philosophers;
 }				t_data;
-
 
 #endif

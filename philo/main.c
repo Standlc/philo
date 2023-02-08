@@ -41,22 +41,26 @@ void	free_philosophers(t_philosopher *philosophers, int size)
 	free(philosophers);
 }
 
+void	*test(void *args)
+{
+	// printf("%d\n", *(int *)args);
+	printf("YES\n");
+	return (NULL);
+}
+
 void	init_philosophers(t_data *data)
 {
 	int	i;
 
 	data->philosophers = malloc(sizeof(t_philosopher) * data->philosophers_amount);
 	if (!data->philosophers)
-	{
-		printf("%d\n", data->philosophers_amount);
 		exit(1);
-	}
 	i = 0;
 	while (i < data->philosophers_amount)
 	{
+		pthread_create(&(data->philosophers[i].thread), NULL, test, (void*)&(data->philosophers[i]));
 		data->philosophers[i].id = i + 1;
-		data->philosophers[i].forks.left = 1;
-		data->philosophers[i].forks.right = data->philosophers_amount > 1;
+		data->philosophers[i].fork = 1;
 		i++;
 	}
 }
