@@ -32,10 +32,8 @@ typedef struct s_philosopher
 	int				is_alive;
 	int				is_thinking;
 	int				time;
+	int				starting_time;
 	int				required_eating_amount;
-	pthread_t		starving_thread;
-	pthread_mutex_t	starving_mutex;
-
 }				t_philosopher;
 
 typedef struct s_data
@@ -44,5 +42,12 @@ typedef struct s_data
 	int 			philosophers_amount;
 	int				time;
 }				t_data;
+
+int				ft_atoi(char *str);
+void			free_philosophers(t_philosopher *philosophers, int size);
+int				now(void);
+t_philosopher	*get_philosopher_to_left(t_philosopher *curr);
+
+void			*routine(void *args);
 
 #endif

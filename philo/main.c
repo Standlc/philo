@@ -12,63 +12,72 @@
 
 #include "philo.h"
 
-int	ft_atoi(char *str)
+void	init_philosopher(t_philosopher *curr, int argc, char **argv, int i)
 {
-	int	n;
-	int	sign;
+	curr->philosophers_amount = ft_atoi(argv[1]);
+	curr->time_to_die = ft_atoi(argv[2]);
+	curr->time_to_eat = ft_atoi(argv[3]);
+	curr->time_to_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+		curr->required_eating_amount = ft_atoi(argv[5]);
+	else
+		curr->required_eating_amount = -1;
+	curr->id = i + 1;
+	curr->fork = 1;
+	curr->is_thinking = 0;
+	pthread_mutex_init(&(curr->fork_mutex), NULL);
+	curr->is_alive = 1;
+}
 
-	n = 0;
-	sign = 1;
-	while (*str == ' ' || (*str >= 9 && *str <= 13))
-		str++;
-	if (*str == '-' || *str == '+')
+int	create_philosophers(t_data *data, int argc, char **argv)
+{
+	int	i;
+
+	data->philosophers = malloc(sizeof(t_philosopher) * data->philosophers_amount);
+	if (!data->philosophers)
+		return (1);
+	i = 0;
+	while (i < data->philosophers_amount)
 	{
-		if (*str == '-')
-			sign = -1;
-		str++;
+		init_philosopher(&(data->philosophers[i]), argc, argv, i);
+		i++;
 	}
-	while (*str >= '0' && *str <= '9')
+	return (0);
+}
+
+int	join_threads(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->philosophers_amount)
 	{
-		n = n * 10 + *str - '0';
-		str++;
+		pthread_join(data->philosophers[i].thread, NULL);
+		i++;
 	}
-	return (n * sign);
+	return (0);
 }
 
-void	free_philosophers(t_philosopher *philosophers, int size)
+int	start_threads(t_data *data)
 {
-	(void)size;
-	free(philosophers);
-}
+	int	i;
 
-t_philosopher *get_philosopher_to_left(t_philosopher *curr)
-{
-	if (curr->id != 1)
-		return (curr - 1);
-	return (curr + curr->philosophers_amount - 1);
-}
-
-t_philosopher *get_philosopher_to_right(t_philosopher *curr)
-{
-	if (curr->id != curr->philosophers_amount)
-		return (curr + 1);
-	return (curr - curr->philosophers_amount + 1);
+	i = 0;
+	while (i < data->philosophers_amount)
+	{
+		pthread_create(&(data->philosophers[i].thread), NULL, routine, &(data->philosophers[i]));
+		i++;
+	}
+	return (0);
 }
 
 void	eat(t_philosopher *left, t_philosopher *curr)
 {
-	struct timeval	tv;
-
 	curr->is_thinking = 0;
+	curr->time = now();
 
-	// pthread_mutex_lock(&(curr->starving_mutex));
-	gettimeofday(&tv, NULL);
-	curr->time = tv.tv_usec;
-	// pthread_mutex_unlock(&(curr->starving_mutex));
-
-	printf("%d is eating\n", curr->id);
-	usleep(curr->time_to_eat);
-
+	printf("%d %d is eating\n", now() - curr->starting_time, curr->id);
+	usleep(curr->time_to_eat * 1000);
 	pthread_mutex_lock(&(left->fork_mutex));
 	pthread_mutex_lock(&(curr->fork_mutex));
 	left->fork = 1;
@@ -77,47 +86,53 @@ void	eat(t_philosopher *left, t_philosopher *curr)
 	pthread_mutex_unlock(&(curr->fork_mutex));
 }
 
-void	*starving(void *args)
+int	check_for_deads(void *args)
 {
-	t_philosopher	*curr;
-	struct timeval	tv;
+	int		i;
+	t_data	*data;
 
-	curr = (t_philosopher *)args;
+	data = (t_data *)args;
 	while (1)
 	{
-		gettimeofday(&tv, NULL);
-		if (tv.tv_usec - curr->time >= curr->time_to_die)
+		i = 0;
+		while (i < data->philosophers_amount)
 		{
-			curr->is_alive = 0;
-			printf("%d died\n", curr->id);
-			break ;
+			// if (now() - data->philosophers[i].time >= data->philosophers[i].time_to_die)
+			// {
+			// 	data->philosophers[i].is_alive = 0;
+			// 	printf("%d died\n", data->philosophers[i].id);
+			// 	return (1);
+			// }
+			i++;
 		}
 		usleep(1000);
 	}
-	return (curr);
+	return (0);
 }
 
 void	think(t_philosopher *curr)
 {
-	if (!curr->is_thinking)
-		printf("%d is thinking\n", curr->id);
+	if (curr->is_alive && !curr->is_thinking)
+		printf("%d %d is thinking\n", now() - curr->starting_time, curr->id);
 	curr->is_thinking = 1;
 }
 
-void	sleep_time(t_philosopher *curr)
+void	put_philosopher_to_bed(t_philosopher *curr)
 {
-	printf("%d is sleeping\n", curr->id);
-	usleep(curr->time_to_eat);
+	if (!curr->is_alive)
+		return ;
+	printf("%d %d is sleeping\n", now() - curr->starting_time, curr->id);
+	usleep(curr->time_to_eat * 1000);
 }
 
 int	take_forks(t_philosopher *left, t_philosopher *curr)
 {
 	pthread_mutex_lock(&(left->fork_mutex));
 	pthread_mutex_lock(&(curr->fork_mutex));
-	if (left->fork && curr->fork)
+	if (curr->is_alive && left->fork && curr->fork)
 	{
-		printf("%d has taken a fork\n", curr->id);
-		printf("%d has taken a fork\n", curr->id);
+		printf("%d %d has taken a fork\n", now() - curr->starting_time, curr->id);
+		printf("%d %d has taken a fork\n", now() - curr->starting_time, curr->id);
 		curr->fork = 0;
 		left->fork = 0;
 		pthread_mutex_unlock(&(left->fork_mutex));
@@ -137,8 +152,8 @@ void	*routine(void *args)
 
 	curr = (t_philosopher *)args;
 	left = get_philosopher_to_left(curr);
-	pthread_create(&(curr->starving_thread), NULL, starving, curr);
-	pthread_mutex_init(&(curr->starving_mutex), NULL);
+	curr->time = now();
+	curr->starting_time = now();
 	eating_count = 0;
 	while (curr->is_alive
 		&& (curr->required_eating_amount == -1 || eating_count <= curr->required_eating_amount))
@@ -146,7 +161,7 @@ void	*routine(void *args)
 		if (take_forks(left, curr) == 2)
 		{
 			eat(left, curr);
-			sleep_time(curr);
+			put_philosopher_to_bed(curr);
 			eating_count++;
 		}
 		think(curr);
@@ -154,65 +169,18 @@ void	*routine(void *args)
 	return (NULL);
 }
 
-void	init_philosopher(t_philosopher *curr, int argc, char **argv, int i)
-{
-	curr->philosophers_amount = ft_atoi(argv[1]);
-	curr->time_to_die = ft_atoi(argv[2]);
-	curr->time_to_eat = ft_atoi(argv[3]);
-	curr->time_to_sleep = ft_atoi(argv[4]);
-	if (argc == 6)
-		curr->required_eating_amount = ft_atoi(argv[5]);
-	else
-		curr->required_eating_amount = -1;
-	curr->id = i + 1;
-	curr->fork = 1;
-	curr->is_thinking = 0;
-	curr->time = 
-	pthread_mutex_init(&(curr->fork_mutex), NULL);
-	curr->is_alive = 1;
-}
-
-void	init_philosophers(t_data *data, int argc, char **argv)
-{
-	int	i;
-
-	data->philosophers = malloc(sizeof(t_philosopher) * data->philosophers_amount);
-	if (!data->philosophers)
-		exit(1);
-	i = 0;
-	while (i < data->philosophers_amount)
-	{
-		data->philosophers[i].time = data->time;
-		init_philosopher(&(data->philosophers[i]), argc, argv, i);
-		i++;
-	}
-	i = 0;
-	while (i < data->philosophers_amount)
-	{
-		pthread_create(&(data->philosophers[i].thread), NULL, routine, &(data->philosophers[i]));
-		i++;
-	}
-	i = 0;
-	while (i < data->philosophers_amount)
-	{
-		pthread_join(data->philosophers[i].thread, NULL);
-		i++;
-	}
-}
-
 // 5 800 200 200
 int main(int argc, char **argv)
 {
-	struct timeval	tv;
-    struct timezone	tz;
 	t_data			data;
 
 	if (argc != 5 && argc != 6)
 		return (printf("You must pass the required arguments.\n"), 1);
 	data.philosophers_amount = ft_atoi(argv[1]);
-    gettimeofday(&tv, &tz);
-	data.time = tv.tv_usec;
-	init_philosophers(&data, argc, argv);
+	create_philosophers(&data, argc, argv);
+	start_threads(&data);
+	check_for_deads(data.philosophers);
+	join_threads(&data);
 	free_philosophers(data.philosophers, data.philosophers_amount);
 	return (0);
 }
