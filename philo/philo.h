@@ -34,6 +34,7 @@ typedef struct s_philosopher
 	int				last_meal_time;
 	int				starting_time;
 	int				now;
+	int				timestamps;
 	int				required_eating_amount;
 }				t_philosopher;
 
@@ -41,7 +42,8 @@ typedef struct s_data
 {
 	t_philosopher	*philosophers;
 	int 			philosophers_amount;
-	int				time;
+	int				now;
+	int				starting_time;
 }				t_data;
 
 int				ft_atoi(char *str);

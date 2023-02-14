@@ -45,6 +45,8 @@ int	pwait(size_t to_do, size_t to_die)
 	size_t	curr;
 	size_t	begin;
 
+	// usleep(to_do * 1000);
+	// return (0);
 	end = now() + to_do;
 	curr = now();
 	begin = curr;
