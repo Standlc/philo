@@ -6,7 +6,7 @@
 /*   By: stde-la- <stde-la-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 16:28:21 by stde-la-          #+#    #+#             */
-/*   Updated: 2023/02/10 18:09:50 by stde-la-         ###   ########.fr       */
+/*   Updated: 2023/02/14 12:40:29 by stde-la-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,9 @@ typedef struct s_philosopher
 	int				time_to_sleep;
 	int				is_alive;
 	int				is_thinking;
-	int				time;
+	int				last_meal_time;
 	int				starting_time;
+	int				now;
 	int				required_eating_amount;
 }				t_philosopher;
 
