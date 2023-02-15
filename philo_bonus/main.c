@@ -41,7 +41,7 @@ int	main(int argc, char **argv)
 		return (1);
 	if (create_philos(&data))
 		return (printf("Malloc error\n"), 1);
-	start_threads(&data);
+	start_processes(&data);
 	check_for_deads(data.philos, &(data.rules));
 	join_threads(&data);
 	free(data.philos);
