@@ -1,21 +1,26 @@
-NAME	=	philo
+NAME		=	philo
 
-SOURCES	=	main.c					utils.c \
+SOURCES		=	main.c					utils/utils.c \
+			check_for_deads.c		philosopher_states.c \
+			utils/threads_utils.c	init.c \
 
-OBJECTS	= 	$(SOURCES:.c=.o)
 
-RM		=	rm -f
+OBJECTS		= 	$(SOURCES:.c=.o)
 
-CC		=	cc
+DEPENDECIES	=	philo.h Makefile
 
-CFLAGS	=	-Wall -Wextra #-Werror
+RM			=	rm -f
+
+CC			=	cc
+
+CFLAGS		=	-Wall -Wextra #-Werror 
 
 all : $(NAME)
 
 $(NAME) : $(OBJECTS)
 		$(CC) $(OBJECTS) -pthread -o $(NAME)
-
-%.o : %.c philo.h Makefile
+#-fsanitize=thread
+%.o : %.c $(DEPENDECIES)
 		$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
