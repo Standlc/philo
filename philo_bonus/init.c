@@ -17,7 +17,7 @@ void	init_philosopher(t_data *data, t_philosopher *curr, int i)
 	curr->rules = &(data->rules);
 	curr->last_meal_time = data->rules.starting_time;
 	curr->id = i + 1;
-	curr->is_thinking = 0;
+	// curr->is_thinking = 0;
 	curr->eating_count = 0;
 	// pthread_mutex_init(&(curr->fork_mutex), NULL);
 }
@@ -47,6 +47,10 @@ int	init_data(t_data *data, int argc, char **argv)
 	data->rules.time_to_die = ft_atoi(argv[2]);
 	data->rules.time_to_eat = ft_atoi(argv[3]);
 	data->rules.time_to_sleep = ft_atoi(argv[4]);
+	sem_unlink("/forks");
+	data->rules.forks = sem_open("/forks", O_CREAT, S_IRWXU, data->rules.amount);
+	sem_unlink("/some_dead");
+	data->rules.some_dead = sem_open("/some_dead", O_CREAT, S_IRWXU, 0);
 	if (argc == 6)
 	{
 		data->rules.required_eat_count = ft_atoi(argv[5]);

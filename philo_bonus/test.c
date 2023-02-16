@@ -3,20 +3,17 @@
 #include <unistd.h>
 // -lpthread -lrt
 
-void	print()
-{
-	if (fork() == 0)
-		printf("fork\n");
-}
-
 void	start_processes(int size)
 {
-	int i = 0;
-	while (i < size)
+	if (!size)
+		return ;
+	if (fork() == 0)
 	{
-		print();
-		i++;
+		printf("fork\n");
+		start_processes(size - 1);
 	}
+	// else
+	// 	printf("starting\n");
 }
 
 int main()

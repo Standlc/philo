@@ -28,12 +28,12 @@ int	check_eating_counts(t_philosopher *philos, t_rules *rules)
 	return (0);
 }
 
-void	unlock_mutexes(t_philosopher *philos, t_rules *rules)
+void	unlock_mutexes(t_philosopher *philos, int size)
 {
 	int	i;
 
 	i = 0;
-	while (i < rules->amount)
+	while (i < size)
 	{
 		pthread_mutex_unlock(&(philos[i].fork_mutex));
 		i++;
@@ -57,7 +57,7 @@ void	check_for_deads(t_philosopher *philos, t_rules *rules)
 				rules->some_dead = 1;
 				timestamp = now() - rules->starting_time;
 				printf("%d %d died\n", timestamp, philos[i].id);
-				unlock_mutexes(philos, rules);
+				unlock_mutexes(philos, rules->amount);
 				return ;
 			}
 			i++;

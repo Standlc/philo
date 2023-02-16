@@ -25,7 +25,7 @@ void	put_philosopher_status(t_philosopher *curr, char *status)
 
 void	eat(t_philosopher *left, t_philosopher *curr)
 {
-	curr->is_thinking = 0;
+	// curr->is_thinking = 0;
 	curr->eating_count++;
 	curr->last_meal_time = now();
 	put_philosopher_status(curr, "is eating");
@@ -36,9 +36,9 @@ void	eat(t_philosopher *left, t_philosopher *curr)
 
 void	think(t_philosopher *curr)
 {
-	if (!curr->is_thinking)
+	// if (!curr->is_thinking)
 		put_philosopher_status(curr, "is thinking");
-	curr->is_thinking = 1;
+	// curr->is_thinking = 1;
 }
 
 void	put_philosopher_to_bed(t_philosopher *curr)

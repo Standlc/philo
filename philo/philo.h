@@ -26,7 +26,6 @@ typedef struct s_philosopher
 	int				id;
 	pthread_t		thread;
 	pthread_mutex_t	fork_mutex;
-	int				is_thinking;
 	int				last_meal_time;
 	int				eating_count;
 	pthread_mutex_t	*print_mutex;

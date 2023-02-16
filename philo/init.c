@@ -17,7 +17,7 @@ void	init_philosopher(t_data *data, t_philosopher *curr, int i)
 	curr->rules = &(data->rules);
 	curr->last_meal_time = data->rules.starting_time;
 	curr->id = i + 1;
-	curr->is_thinking = 0;
+	// curr->is_thinking = 0;
 	curr->eating_count = 0;
 	pthread_mutex_init(&(curr->fork_mutex), NULL);
 }
