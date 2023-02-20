@@ -28,7 +28,7 @@ void	eat(t_philosopher *curr)
 	curr->eating_count++;
 	curr->last_meal_time = now();
 	put_philosopher_status(curr, "is eating");
-	wait(curr->rules->time_to_eat);
+	waitting(curr->rules->time_to_eat);
 	sem_post(curr->rules->forks);
 	sem_post(curr->rules->forks);
 }
@@ -41,7 +41,7 @@ void	think(t_philosopher *curr)
 void	put_philosopher_to_bed(t_philosopher *curr)
 {
 	put_philosopher_status(curr, "is sleeping");
-	wait(curr->rules->time_to_sleep);
+	waitting(curr->rules->time_to_sleep);
 }
 
 void	take_forks(t_philosopher *curr)

@@ -12,14 +12,19 @@
 
 #include "philo.h"
 
+//PROTECT MUTEXES
 void	init_philosopher(t_data *data, t_philosopher *curr, int i)
 {
-	curr->rules = &(data->rules);
+	data->philos[i].print_mutex = &(data->print_mutex);
+	data->philos[i].some_dead_mutex = &(data->some_dead_mutex);
+	curr->some_dead = &(data->some_dead);
+	curr->rules = data->rules;
 	curr->last_meal_time = data->rules.starting_time;
 	curr->id = i + 1;
-	// curr->is_thinking = 0;
 	curr->eating_count = 0;
 	pthread_mutex_init(&(curr->fork_mutex), NULL);
+	pthread_mutex_init(&(curr->eating_count_mutex), NULL);
+	pthread_mutex_init(&(curr->last_meal_mutex), NULL);
 }
 
 int	create_philos(t_data *data)
@@ -34,7 +39,6 @@ int	create_philos(t_data *data)
 	starting_time = now();
 	while (i < data->rules.amount)
 	{
-		data->philos[i].print_mutex = &(data->print_mutex);
 		init_philosopher(data, data->philos + i, i);
 		i++;
 	}
@@ -56,7 +60,8 @@ int	init_data(t_data *data, int argc, char **argv)
 	else
 		data->rules.required_eat_count = -1;
 	data->rules.starting_time = now();
-	data->rules.some_dead = 0;
+	data->some_dead = 0;
 	pthread_mutex_init(&(data->print_mutex), NULL);
+	pthread_mutex_init(&(data->some_dead_mutex), NULL);
 	return (0);
 }

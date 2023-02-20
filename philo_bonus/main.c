@@ -12,40 +12,46 @@
 
 #include "philo.h"
 
-void	*philosophing(t_philosopher	*curr)
+void	philosophing(t_philosopher	*curr)
 {
-	// sem_wait(curr->rules->forks);
-	// int value;
-	// sem_getvalue(curr->rules->forks, &value);
-	// printf("%d\n", value);
-	printf("id: %d pid: %d \n", curr->id, curr->pid);
-	// printf("%d\n", value);
-	// sem_post(curr->rules->forks);
-
-	// if (curr->id % 2 == 0)
-	// 	usleep(curr->rules->time_to_eat / 2);
+	if (curr->id % 2 == 0)
+		usleep(curr->rules->time_to_eat / 2);
 	while (has_eaten_enough(curr) && !curr->rules->some_dead)
 	{
-		// take_forks(curr);
-		// eat(curr);
-		// printf("%d\n", curr->rules->some_dead);
+		take_forks(curr);
+		eat(curr);
 		put_philosopher_to_bed(curr);
 		think(curr);
 	}
-	return (NULL);
 }
 
-void	start_processes(t_philosopher *philosophers, int size, int i)
+void	print_pid(t_philosopher *philosophers, int size)
 {
-	if (i == size)
-		return ;
-	if (fork() == 0)
-		start_processes(philosophers, size, i + 1);
-	else
+	int i = 0;
+	while (i < size)
 	{
-		philosophers[i].pid = getpid();
-		philosophing(philosophers + i);
+		printf("%d ", philosophers[i].pid);
+		i++;
 	}
+	printf("\n");
+}
+
+void	start_processes(t_philosopher *philosophers, int size)
+{
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		philosophers[i].pid = fork();
+		if (philosophers[i].pid == 0)
+		{
+			philosophing(philosophers + i);
+			return ;
+		}
+		i++;
+	}
+	print_pid(philosophers, size);
 }
 
 void	kill_processes(t_philosopher *philosophers, int size)
@@ -63,8 +69,21 @@ void	kill_processes(t_philosopher *philosophers, int size)
 void	close_program(t_data *data)
 {
 	// kill_processes(data->philos, data->rules.amount);
-	// sem_close(data->rules.forks);
-	// free(data->philos);
+	sem_close(data->rules.forks);
+	free(data->philos);
+}
+
+void	wait_philosophers(t_philosopher *philosophers, int size)
+{
+	int	i;
+	int	status_ptr;
+
+	i = 0;
+	while (i < size)
+	{
+		waitpid(philosophers[i].pid, &status_ptr, 0);
+		i++;
+	}
 }
 
 int	main(int argc, char **argv)
@@ -77,8 +96,9 @@ int	main(int argc, char **argv)
 		return (1);
 	if (create_philos(&data))
 		return (printf("Malloc error\n"), 1);
-	start_processes(data.philos, data.rules.amount, 0);
-	check_for_deads(data.philos, &(data.rules));
+	start_processes(data.philos, data.rules.amount);
+	// check_for_deads(data.philos, &(data.rules));
+	wait_philosophers(data.philos, data.rules.amount);
 	close_program(&data);
 	return (0);
 }

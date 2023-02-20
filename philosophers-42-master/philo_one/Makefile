@@ -23,7 +23,7 @@ all:	$(NAME)
 .PHONY:	clean fclean re bonus bench bclean
 
 $(NAME): $(OBJS) Makefile
-	$(CLANG) $(INCLUDE) $(FLAGS) -fsanitize=thread -o $(NAME) $(OBJS)
+	$(CLANG) $(INCLUDE) $(FLAGS) -o $(NAME) $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(B_OBJS)

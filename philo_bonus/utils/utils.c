@@ -41,7 +41,7 @@ int	has_eaten_enough(t_philosopher *curr)
 		|| curr->eating_count < curr->rules->required_eat_count);
 }
 
-void	wait(int time)
+void	waitting(int time)
 {
 	int	start;
 

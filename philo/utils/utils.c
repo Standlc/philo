@@ -37,8 +37,13 @@ int	ft_atoi(char *str)
 
 int	has_eaten_enough(t_philosopher *curr)
 {
-	return (curr->rules->required_eat_count == -1
-		|| curr->eating_count < curr->rules->required_eat_count);
+	int	result;
+
+	pthread_mutex_lock(&(curr->eating_count_mutex));
+	result = (curr->rules.required_eat_count == -1
+			|| curr->eating_count < curr->rules.required_eat_count);
+	pthread_mutex_unlock(&(curr->eating_count_mutex));
+	return (result);
 }
 
 void	wait(int time)
@@ -60,5 +65,5 @@ int	now(void)
 
 t_philosopher	*get_philosopher_to_left(t_philosopher *curr)
 {
-	return (curr + (curr->id == 1) * curr->rules->amount - 1);
+	return (curr + (curr->id == 1) * curr->rules.amount - 1);
 }

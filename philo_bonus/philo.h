@@ -18,6 +18,7 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <pthread.h>
+# include <sys/wait.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <signal.h>
@@ -56,7 +57,7 @@ typedef struct s_data
 int				ft_atoi(char *str);
 int				now(void);
 t_philosopher	*get_philosopher_to_left(t_philosopher *curr);
-void			wait(int time);
+void			waitting(int time);
 int				has_eaten_enough(t_philosopher *curr);
 
 int				join_threads(t_data *data);

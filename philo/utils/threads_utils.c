@@ -38,3 +38,13 @@ int	start_threads(t_data *data)
 	}
 	return (0);
 }
+
+int	nobody_died(t_philosopher *curr)
+{
+	int	result;
+
+	pthread_mutex_lock(curr->some_dead_mutex);
+	result = !*(curr->some_dead);
+	pthread_mutex_unlock(curr->some_dead_mutex);
+	return (result);
+}

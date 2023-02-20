@@ -20,8 +20,8 @@ void	*routine(void *args)
 	curr = (t_philosopher *)args;
 	left = get_philosopher_to_left(curr);
 	if (curr->id % 2 == 0)
-		usleep(curr->rules->time_to_eat / 2);
-	while (has_eaten_enough(curr) && !curr->rules->some_dead)
+		usleep(curr->rules.time_to_eat / 2);
+	while (has_eaten_enough(curr) && nobody_died(curr))
 	{
 		take_forks(left, curr);
 		eat(left, curr);
@@ -42,7 +42,7 @@ int	main(int argc, char **argv)
 	if (create_philos(&data))
 		return (printf("Malloc error\n"), 1);
 	start_threads(&data);
-	check_for_deads(data.philos, &(data.rules));
+	check_for_deads(data.philos, &data, &(data.rules));
 	join_threads(&data);
 	free(data.philos);
 	return (0);

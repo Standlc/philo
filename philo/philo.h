@@ -19,19 +19,6 @@
 # include <unistd.h>
 # include <sys/time.h>
 
-typedef struct s_rules	t_rules;
-
-typedef struct s_philosopher
-{
-	int				id;
-	pthread_t		thread;
-	pthread_mutex_t	fork_mutex;
-	int				last_meal_time;
-	int				eating_count;
-	pthread_mutex_t	*print_mutex;
-	t_rules			*rules;
-}				t_philosopher;
-
 typedef struct s_rules
 {
 	int	required_eat_count;
@@ -40,13 +27,29 @@ typedef struct s_rules
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	starting_time;
-	int	some_dead;
 }				t_rules;
+
+typedef struct s_philosopher
+{
+	int				id;
+	pthread_t		thread;
+	pthread_mutex_t	fork_mutex;
+	pthread_mutex_t	eating_count_mutex;
+	pthread_mutex_t	last_meal_mutex;
+	int				last_meal_time;
+	int				eating_count;
+	pthread_mutex_t	*print_mutex;
+	pthread_mutex_t	*some_dead_mutex;
+	int				*some_dead;
+	t_rules			rules;
+}				t_philosopher;
 
 typedef struct s_data
 {
 	t_philosopher	*philos;
 	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	some_dead_mutex;
+	int				some_dead;
 	t_rules			rules;
 }				t_data;
 
@@ -58,10 +61,12 @@ int				has_eaten_enough(t_philosopher *curr);
 
 int				start_threads(t_data *data);
 int				join_threads(t_data *data);
+int				nobody_died(t_philosopher *curr);
 
 void			*routine(void *args);
 
-void			check_for_deads(t_philosopher *philos, t_rules *rules);
+void			check_for_deads(t_philosopher *philos,
+					t_data *data, t_rules *rules);
 
 void			put_philosopher_status(t_philosopher *curr, char *status);
 void			take_forks(t_philosopher *left, t_philosopher *curr);
