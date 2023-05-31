@@ -22,7 +22,7 @@ int	check_eating_counts(t_philosopher *philos, t_rules *rules)
 	while (i < rules->amount)
 	{
 		pthread_mutex_lock(&(philos[i].eating_count_mutex));
-		if (philos[i].eating_count != rules->required_eat_count)
+		if (philos[i].eating_count < rules->required_eat_count)
 		{
 			pthread_mutex_unlock(&(philos[i].eating_count_mutex));
 			return (1);
@@ -55,10 +55,23 @@ int	get_time_since_last_meal(t_philosopher *curr)
 	return (result);
 }
 
-void	check_for_deads(t_philosopher *philos, t_data *data, t_rules *rules)
+void	handle_philo_death(t_philosopher *curr)
+{
+	int	timestamp;
+
+	pthread_mutex_lock(curr->some_dead_mutex);
+	*(curr->some_dead) = 1;
+	pthread_mutex_unlock(curr->some_dead_mutex);
+	pthread_mutex_lock(curr->print_mutex);
+	timestamp = now() - curr->rules.starting_time;
+	printf("%d %d %s\n", timestamp, curr->id, "died");
+	pthread_mutex_unlock(curr->print_mutex);
+	// printf("%d %d died\n", timestamp, curr->id);
+}
+
+void	check_for_deads(t_philosopher *philos, t_rules *rules)
 {
 	int	i;
-	int	timestamp;
 
 	while (check_eating_counts(philos, rules))
 	{
@@ -67,16 +80,12 @@ void	check_for_deads(t_philosopher *philos, t_data *data, t_rules *rules)
 		{
 			if (get_time_since_last_meal(philos + i) >= rules->time_to_die)
 			{
-				pthread_mutex_lock(&(data->some_dead_mutex));
-				data->some_dead = 1;
-				pthread_mutex_unlock(&(data->some_dead_mutex));
-				timestamp = now() - rules->starting_time;
-				printf("%d %d died\n", timestamp, philos[i].id);
-				unlock_mutexes(philos, rules->amount);
+				handle_philo_death(philos + i);
+				// unlock_mutexes(philos, rules->amount);
 				return ;
 			}
 			i++;
 		}
-		usleep(1000);
+		usleep(100);
 	}
 }

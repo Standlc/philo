@@ -59,14 +59,14 @@ t_philosopher	*get_philosopher_to_left(t_philosopher *curr);
 void			wait(int time);
 int				has_eaten_enough(t_philosopher *curr);
 
+void 			handle_mutex(pthread_mutex_t *mutex, int *data, int new_value);
 int				start_threads(t_data *data);
 int				join_threads(t_data *data);
 int				nobody_died(t_philosopher *curr);
 
 void			*routine(void *args);
 
-void			check_for_deads(t_philosopher *philos,
-					t_data *data, t_rules *rules);
+void			check_for_deads(t_philosopher *philos, t_rules *rules);
 
 void			put_philosopher_status(t_philosopher *curr, char *status);
 void			take_forks(t_philosopher *left, t_philosopher *curr);

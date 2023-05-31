@@ -30,13 +30,11 @@ void	init_philosopher(t_data *data, t_philosopher *curr, int i)
 int	create_philos(t_data *data)
 {
 	int	i;
-	int	starting_time;
 
 	data->philos = malloc(sizeof(t_philosopher) * data->rules.amount);
 	if (!data->philos)
 		return (1);
 	i = 0;
-	starting_time = now();
 	while (i < data->rules.amount)
 	{
 		init_philosopher(data, data->philos + i, i);

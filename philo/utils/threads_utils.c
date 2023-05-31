@@ -12,6 +12,13 @@
 
 #include "../philo.h"
 
+void handle_mutex(pthread_mutex_t *mutex, int *data, int new_value)
+{
+	pthread_mutex_lock(mutex);
+	*data = new_value;
+	pthread_mutex_unlock(mutex);
+}
+
 int	join_threads(t_data *data)
 {
 	int	i;

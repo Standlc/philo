@@ -36,13 +36,14 @@ int	main(int argc, char **argv)
 	t_data	data;
 
 	if (argc != 5 && argc != 6)
-		return (printf("You must pass the required arguments.\n"), 1);
+		return (printf("error: required arguments: \
+<nb philos> <time die> <time eat> <time sleep> (<nb meals>)"), 1);
 	if (init_data(&data, argc, argv))
 		return (1);
 	if (create_philos(&data))
 		return (printf("Malloc error\n"), 1);
 	start_threads(&data);
-	check_for_deads(data.philos, &data, &(data.rules));
+	check_for_deads(data.philos, &(data.rules));
 	join_threads(&data);
 	free(data.philos);
 	return (0);

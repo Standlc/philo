@@ -18,8 +18,10 @@ void	put_philosopher_status(t_philosopher *curr, char *status)
 
 	pthread_mutex_lock(curr->print_mutex);
 	timestamp = now() - curr->rules.starting_time;
+	pthread_mutex_lock(curr->some_dead_mutex);
 	if (!*(curr->some_dead))
 		printf("%d %d %s\n", timestamp, curr->id, status);
+	pthread_mutex_unlock(curr->some_dead_mutex);
 	pthread_mutex_unlock(curr->print_mutex);
 }
 
