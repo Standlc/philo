@@ -12,7 +12,7 @@
 
 #include "../philo.h"
 
-void handle_mutex(pthread_mutex_t *mutex, int *data, int new_value)
+void	handle_mutex(pthread_mutex_t *mutex, int *data, int new_value)
 {
 	pthread_mutex_lock(mutex);
 	*data = new_value;
@@ -46,7 +46,7 @@ int	start_threads(t_data *data)
 	return (0);
 }
 
-int	nobody_died(t_philosopher *curr)
+int	is_everybody_alive(t_philosopher *curr)
 {
 	int	result;
 

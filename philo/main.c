@@ -20,8 +20,8 @@ void	*routine(void *args)
 	curr = (t_philosopher *)args;
 	left = get_philosopher_to_left(curr);
 	if (curr->id % 2 == 0)
-		usleep(curr->rules.time_to_eat / 2);
-	while (has_eaten_enough(curr) && nobody_died(curr))
+		wait_time(curr->rules.time_to_eat);
+	while (!has_eaten_enough(curr) && is_everybody_alive(curr))
 	{
 		take_forks(left, curr);
 		eat(left, curr);

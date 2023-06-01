@@ -43,20 +43,40 @@ int	create_philos(t_data *data)
 	return (0);
 }
 
+int	args_to_int(t_rules *rules, int argc, char **argv)
+{
+	int	overflow_status;
+
+	overflow_status = 0;
+	rules->amount = ft_atoi(argv[1], &overflow_status);
+	rules->time_to_die = ft_atoi(argv[2], &overflow_status);
+	rules->time_to_eat = ft_atoi(argv[3], &overflow_status);
+	rules->time_to_sleep = ft_atoi(argv[4], &overflow_status);
+	if (argc == 6)
+		rules->required_eat_count = ft_atoi(argv[5], &overflow_status);
+	else
+		rules->required_eat_count = -1;
+	return (overflow_status);
+}
+
+int	handle_atoi_status(int atoi_status)
+{
+	if (atoi_status == INT_OVERFLOW)
+		return (printf("arg error: interger overflow\n"), 1);
+	else if (atoi_status == NEGATIVE_NB)
+		return (printf("arg error: arguments must be positive and != 0\n"), 1);
+	else if (atoi_status == CONTAINS_ALPHA)
+		return (printf("arg error: arguments must be numbers\n"), 1);
+	return (atoi_status);
+}
+
 int	init_data(t_data *data, int argc, char **argv)
 {
-	data->rules.amount = ft_atoi(argv[1]);
-	data->rules.time_to_die = ft_atoi(argv[2]);
-	data->rules.time_to_eat = ft_atoi(argv[3]);
-	data->rules.time_to_sleep = ft_atoi(argv[4]);
-	if (argc == 6)
-	{
-		data->rules.required_eat_count = ft_atoi(argv[5]);
-		if (data->rules.required_eat_count <= 0)
-			return (printf("You must pass a positive number of meals.\n"), 1);
-	}
-	else
-		data->rules.required_eat_count = -1;
+	int	atoi_status;
+
+	atoi_status = args_to_int(&(data->rules), argc, argv);
+	if (handle_atoi_status(atoi_status))
+		return (1);
 	data->rules.starting_time = now();
 	data->some_dead = 0;
 	pthread_mutex_init(&(data->print_mutex), NULL);

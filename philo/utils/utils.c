@@ -12,27 +12,29 @@
 
 #include "../philo.h"
 
-int	ft_atoi(char *str)
+int	ft_atoi(char *str, int *status)
 {
-	int	n;
-	int	sign;
+	long	n;
 
+	if (*status)
+		return (0);
 	n = 0;
-	sign = 1;
 	while (*str == ' ' || (*str >= 9 && *str <= 13))
 		str++;
-	if (*str == '-' || *str == '+')
-	{
-		if (*str == '-')
-			sign = -1;
+	if (*str == '+')
 		str++;
-	}
-	while (*str >= '0' && *str <= '9')
+	while (n <= INT_MAX && *str >= '0' && *str <= '9')
 	{
 		n = n * 10 + *str - '0';
 		str++;
 	}
-	return (n * sign);
+	if (n > INT_MAX)
+		*status = INT_OVERFLOW;
+	else if (*str != '\0' && *str != '-')
+		*status = CONTAINS_ALPHA;
+	else if (*str == '-' || n == 0)
+		*status = NEGATIVE_NB;
+	return (n);
 }
 
 int	has_eaten_enough(t_philosopher *curr)
@@ -40,19 +42,21 @@ int	has_eaten_enough(t_philosopher *curr)
 	int	result;
 
 	pthread_mutex_lock(&(curr->eating_count_mutex));
-	result = (curr->rules.required_eat_count == -1
-			|| curr->eating_count < curr->rules.required_eat_count);
+	if (curr->rules.required_eat_count == -1)
+		result = 0;
+	else
+		result = curr->eating_count == curr->rules.required_eat_count;
 	pthread_mutex_unlock(&(curr->eating_count_mutex));
 	return (result);
 }
 
-void	wait(int time)
+void	wait_time(int time)
 {
 	int	start;
 
 	start = now();
 	while (now() - start < time)
-		usleep(100);
+		usleep(50);
 }
 
 int	now(void)

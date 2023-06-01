@@ -66,7 +66,6 @@ void	handle_philo_death(t_philosopher *curr)
 	timestamp = now() - curr->rules.starting_time;
 	printf("%d %d %s\n", timestamp, curr->id, "died");
 	pthread_mutex_unlock(curr->print_mutex);
-	// printf("%d %d died\n", timestamp, curr->id);
 }
 
 void	check_for_deads(t_philosopher *philos, t_rules *rules)
@@ -86,6 +85,6 @@ void	check_for_deads(t_philosopher *philos, t_rules *rules)
 			}
 			i++;
 		}
-		usleep(100);
+		usleep(1000);
 	}
 }

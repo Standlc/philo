@@ -18,6 +18,11 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
+# include <limits.h>
+
+# define INT_OVERFLOW 1
+# define NEGATIVE_NB 2
+# define CONTAINS_ALPHA 3
 
 typedef struct s_rules
 {
@@ -53,16 +58,16 @@ typedef struct s_data
 	t_rules			rules;
 }				t_data;
 
-int				ft_atoi(char *str);
+int				ft_atoi(char *str, int *status);
 int				now(void);
 t_philosopher	*get_philosopher_to_left(t_philosopher *curr);
-void			wait(int time);
+void			wait_time(int time);
 int				has_eaten_enough(t_philosopher *curr);
 
-void 			handle_mutex(pthread_mutex_t *mutex, int *data, int new_value);
+void			handle_mutex(pthread_mutex_t *mutex, int *data, int new_value);
 int				start_threads(t_data *data);
 int				join_threads(t_data *data);
-int				nobody_died(t_philosopher *curr);
+int				is_everybody_alive(t_philosopher *curr);
 
 void			*routine(void *args);
 
