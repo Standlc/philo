@@ -33,18 +33,6 @@ int	check_eating_counts(t_philosopher *philos, t_rules *rules)
 	return (0);
 }
 
-void	unlock_mutexes(t_philosopher *philos, int size)
-{
-	int	i;
-
-	i = 0;
-	while (i < size)
-	{
-		pthread_mutex_unlock(&(philos[i].fork_mutex));
-		i++;
-	}
-}
-
 int	get_time_since_last_meal(t_philosopher *curr)
 {
 	int	result;
@@ -62,8 +50,8 @@ void	handle_philo_death(t_philosopher *curr)
 	pthread_mutex_lock(curr->some_dead_mutex);
 	*(curr->some_dead) = 1;
 	pthread_mutex_unlock(curr->some_dead_mutex);
+	timestamp = now() - curr->rules->starting_time;
 	pthread_mutex_lock(curr->print_mutex);
-	timestamp = now() - curr->rules.starting_time;
 	printf("%d %d %s\n", timestamp, curr->id, "died");
 	pthread_mutex_unlock(curr->print_mutex);
 }
@@ -72,6 +60,8 @@ void	check_for_deads(t_philosopher *philos, t_rules *rules)
 {
 	int	i;
 
+	if (!rules->amount)
+		return ;
 	while (check_eating_counts(philos, rules))
 	{
 		i = 0;
@@ -80,11 +70,12 @@ void	check_for_deads(t_philosopher *philos, t_rules *rules)
 			if (get_time_since_last_meal(philos + i) >= rules->time_to_die)
 			{
 				handle_philo_death(philos + i);
-				// unlock_mutexes(philos, rules->amount);
+				if (rules->amount == 1)
+					pthread_mutex_unlock(&(philos->fork_mutex));
 				return ;
 			}
 			i++;
 		}
-		usleep(1000);
+		usleep(10);
 	}
 }

@@ -32,6 +32,14 @@ int	join_threads(t_data *data)
 	return (0);
 }
 
+void	enable_philos_start(t_data *data)
+{
+	data->rules.starting_time = now();
+	pthread_mutex_lock(&(data->rules.start_philos_mutex));
+	data->rules.start_philos = 1;
+	pthread_mutex_unlock(&(data->rules.start_philos_mutex));
+}
+
 int	start_threads(t_data *data)
 {
 	int	i;
@@ -43,7 +51,8 @@ int	start_threads(t_data *data)
 			NULL, routine, &(data->philos[i]));
 		i++;
 	}
-	return (0);
+	enable_philos_start(data);
+	return (1);
 }
 
 int	is_everybody_alive(t_philosopher *curr)

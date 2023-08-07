@@ -32,7 +32,7 @@ int	ft_atoi(char *str, int *status)
 		*status = INT_OVERFLOW;
 	else if (*str != '\0' && *str != '-')
 		*status = CONTAINS_ALPHA;
-	else if (*str == '-' || n == 0)
+	else if (*str == '-')
 		*status = NEGATIVE_NB;
 	return (n);
 }
@@ -41,22 +41,23 @@ int	has_eaten_enough(t_philosopher *curr)
 {
 	int	result;
 
+	if (curr->rules->required_eat_count == -1)
+		return (0);
 	pthread_mutex_lock(&(curr->eating_count_mutex));
-	if (curr->rules.required_eat_count == -1)
-		result = 0;
-	else
-		result = curr->eating_count == curr->rules.required_eat_count;
+	result = curr->eating_count == curr->rules->required_eat_count;
 	pthread_mutex_unlock(&(curr->eating_count_mutex));
 	return (result);
 }
 
-void	wait_time(int time)
+void	wait_time(t_philosopher *philo, int time)
 {
 	int	start;
 
 	start = now();
-	while (now() - start < time)
-		usleep(50);
+	while (now() - start < time && is_everybody_alive(philo))
+	{
+		usleep(500);
+	}
 }
 
 int	now(void)
@@ -69,5 +70,5 @@ int	now(void)
 
 t_philosopher	*get_philosopher_to_left(t_philosopher *curr)
 {
-	return (curr + (curr->id == 1) * curr->rules.amount - 1);
+	return (curr + (curr->id == 1) * curr->rules->amount - 1);
 }

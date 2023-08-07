@@ -19,7 +19,7 @@ all : $(NAME)
 
 $(NAME) : $(OBJECTS)
 		$(CC) $(OBJECTS) -pthread -o $(NAME)
-#-fsanitize=thread
+
 %.o : %.c $(DEPENDECIES)
 		$(CC) $(CFLAGS) -c $< -o $@
 

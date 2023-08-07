@@ -32,6 +32,8 @@ typedef struct s_rules
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	starting_time;
+	int	start_philos;
+	pthread_mutex_t	start_philos_mutex;
 }				t_rules;
 
 typedef struct s_philosopher
@@ -46,7 +48,7 @@ typedef struct s_philosopher
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*some_dead_mutex;
 	int				*some_dead;
-	t_rules			rules;
+	t_rules			*rules;
 }				t_philosopher;
 
 typedef struct s_data
@@ -61,7 +63,7 @@ typedef struct s_data
 int				ft_atoi(char *str, int *status);
 int				now(void);
 t_philosopher	*get_philosopher_to_left(t_philosopher *curr);
-void			wait_time(int time);
+void			wait_time(t_philosopher *philo, int time);
 int				has_eaten_enough(t_philosopher *curr);
 
 void			handle_mutex(pthread_mutex_t *mutex, int *data, int new_value);
@@ -81,6 +83,5 @@ void			eat(t_philosopher *left, t_philosopher *curr);
 
 int				create_philos(t_data *data);
 int				init_data(t_data *data, int argc, char **argv);
-void			init_philosopher(t_data *data, t_philosopher *curr, int i);
 
 #endif

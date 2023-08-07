@@ -12,6 +12,24 @@
 
 #include "philo.h"
 
+void	wait_other_philos(t_philosopher *curr)
+{
+	while (1)
+	{
+		pthread_mutex_lock(&(curr->rules->start_philos_mutex));
+		if (curr->rules->start_philos)
+		{
+			pthread_mutex_unlock(&(curr->rules->start_philos_mutex));
+			break ;
+		}
+		pthread_mutex_unlock(&(curr->rules->start_philos_mutex));
+		usleep(1);
+	}
+	pthread_mutex_lock(&(curr->last_meal_mutex));
+	curr->last_meal_time = curr->rules->starting_time;
+	pthread_mutex_unlock(&(curr->last_meal_mutex));
+}
+
 void	*routine(void *args)
 {
 	t_philosopher	*left;
@@ -19,8 +37,9 @@ void	*routine(void *args)
 
 	curr = (t_philosopher *)args;
 	left = get_philosopher_to_left(curr);
+	wait_other_philos(curr);
 	if (curr->id % 2 == 0)
-		wait_time(curr->rules.time_to_eat);
+		usleep(1000);
 	while (!has_eaten_enough(curr) && is_everybody_alive(curr))
 	{
 		take_forks(left, curr);
@@ -41,7 +60,7 @@ int	main(int argc, char **argv)
 	if (init_data(&data, argc, argv))
 		return (1);
 	if (create_philos(&data))
-		return (printf("Malloc error\n"), 1);
+		return (1);
 	start_threads(&data);
 	check_for_deads(data.philos, &(data.rules));
 	join_threads(&data);
