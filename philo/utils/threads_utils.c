@@ -55,12 +55,12 @@ int	start_threads(t_data *data)
 	return (1);
 }
 
-int	is_everybody_alive(t_philosopher *curr)
+int	is_end_of_simulation(t_philosopher *curr)
 {
 	int	result;
 
-	pthread_mutex_lock(curr->some_dead_mutex);
-	result = !*(curr->some_dead);
-	pthread_mutex_unlock(curr->some_dead_mutex);
+	pthread_mutex_lock(curr->is_end_mutex);
+	result = *(curr->is_end);
+	pthread_mutex_unlock(curr->is_end_mutex);
 	return (result);
 }

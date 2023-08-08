@@ -15,8 +15,11 @@
 int	init_philosopher(t_data *data, t_philosopher *curr, int i)
 {
 	data->philos[i].print_mutex = &(data->print_mutex);
-	data->philos[i].some_dead_mutex = &(data->some_dead_mutex);
-	curr->some_dead = &(data->some_dead);
+	data->philos[i].is_end_mutex = &(data->is_end_mutex);
+	curr->is_end = &(data->is_end);
+	data->philos[i].philos_finished_eating_mutex =
+		&(data->philos_finished_eating_mutex);
+	curr->philos_finished_eating = &(data->philos_finished_eating);
 	curr->rules = &(data->rules);
 	curr->id = i + 1;
 	curr->eating_count = 0;
@@ -80,9 +83,11 @@ int	init_data(t_data *data, int argc, char **argv)
 	if (handle_atoi_status(atoi_status))
 		return (1);
 	if (pthread_mutex_init(&(data->print_mutex), NULL) ||
-		pthread_mutex_init(&(data->some_dead_mutex), NULL))
+		pthread_mutex_init(&(data->is_end_mutex), NULL) ||
+		pthread_mutex_init(&(data->philos_finished_eating_mutex), NULL))
 		return (printf("mutex init error\n"), 1);
-	data->some_dead = 0;
+	data->is_end = 0;
 	data->rules.start_philos = 0;
+	data->philos_finished_eating = 0;
 	return (0);
 }

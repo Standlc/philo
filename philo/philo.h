@@ -46,8 +46,10 @@ typedef struct s_philosopher
 	int				last_meal_time;
 	int				eating_count;
 	pthread_mutex_t	*print_mutex;
-	pthread_mutex_t	*some_dead_mutex;
-	int				*some_dead;
+	pthread_mutex_t	*is_end_mutex;
+	int				*is_end;
+	pthread_mutex_t	*philos_finished_eating_mutex;
+	int				*philos_finished_eating;
 	t_rules			*rules;
 }				t_philosopher;
 
@@ -55,26 +57,31 @@ typedef struct s_data
 {
 	t_philosopher	*philos;
 	pthread_mutex_t	print_mutex;
-	pthread_mutex_t	some_dead_mutex;
-	int				some_dead;
+	pthread_mutex_t	is_end_mutex;
+	int				is_end;
+	pthread_mutex_t	philos_finished_eating_mutex;
+	int				philos_finished_eating;
 	t_rules			rules;
 }				t_data;
 
 int				ft_atoi(char *str, int *status);
 int				now(void);
 t_philosopher	*get_philosopher_to_left(t_philosopher *curr);
-void			wait_time(t_philosopher *philo, int time);
+void			wait_time(t_philosopher *philo, double mseconds);
 int				has_eaten_enough(t_philosopher *curr);
 
 void			handle_mutex(pthread_mutex_t *mutex, int *data, int new_value);
 int				start_threads(t_data *data);
 int				join_threads(t_data *data);
-int				is_everybody_alive(t_philosopher *curr);
+int				is_end_of_simulation(t_philosopher *curr);
 
 void			*routine(void *args);
 
+void			end_simulation(t_philosopher *philos);
 void			check_for_deads(t_philosopher *philos, t_rules *rules);
 
+void			give_forks_back(t_philosopher *left, t_philosopher *curr);
+void			count_philo_meals(t_philosopher *curr);
 void			put_philosopher_status(t_philosopher *curr, char *status);
 void			take_forks(t_philosopher *left, t_philosopher *curr);
 void			put_philosopher_to_bed(t_philosopher *curr);

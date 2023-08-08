@@ -12,25 +12,22 @@
 
 #include "philo.h"
 
+void	end_simulation(t_philosopher *philos)
+{
+	pthread_mutex_lock(philos->is_end_mutex);
+	*(philos->is_end) = 1;
+	pthread_mutex_unlock(philos->is_end_mutex);
+}
+
 int	check_eating_counts(t_philosopher *philos, t_rules *rules)
 {
-	int	i;
-
 	if (rules->required_eat_count == -1)
 		return (1);
-	i = 0;
-	while (i < rules->amount)
-	{
-		pthread_mutex_lock(&(philos[i].eating_count_mutex));
-		if (philos[i].eating_count < rules->required_eat_count)
-		{
-			pthread_mutex_unlock(&(philos[i].eating_count_mutex));
-			return (1);
-		}
-		pthread_mutex_unlock(&(philos[i].eating_count_mutex));
-		i++;
-	}
-	return (0);
+	pthread_mutex_lock(philos->philos_finished_eating_mutex);
+	if (*(philos->philos_finished_eating) == rules->amount)
+		return (0);
+	pthread_mutex_unlock(philos->philos_finished_eating_mutex);
+	return (1);
 }
 
 int	get_time_since_last_meal(t_philosopher *curr)
@@ -47,9 +44,7 @@ void	handle_philo_death(t_philosopher *curr)
 {
 	int	timestamp;
 
-	pthread_mutex_lock(curr->some_dead_mutex);
-	*(curr->some_dead) = 1;
-	pthread_mutex_unlock(curr->some_dead_mutex);
+	end_simulation(curr);
 	timestamp = now() - curr->rules->starting_time;
 	pthread_mutex_lock(curr->print_mutex);
 	printf("%d %d %s\n", timestamp, curr->id, "died");

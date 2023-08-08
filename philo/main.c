@@ -39,8 +39,8 @@ void	*routine(void *args)
 	left = get_philosopher_to_left(curr);
 	wait_other_philos(curr);
 	if (curr->id % 2 == 0)
-		usleep(1000);
-	while (!has_eaten_enough(curr) && is_everybody_alive(curr))
+		wait_time(curr, 0.5);
+	while (!is_end_of_simulation(curr))
 	{
 		take_forks(left, curr);
 		eat(left, curr);

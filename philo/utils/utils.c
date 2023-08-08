@@ -49,12 +49,12 @@ int	has_eaten_enough(t_philosopher *curr)
 	return (result);
 }
 
-void	wait_time(t_philosopher *philo, int time)
+void	wait_time(t_philosopher *philo, double mseconds)
 {
 	int	start;
 
 	start = now();
-	while (now() - start < time && is_everybody_alive(philo))
+	while (now() - start < mseconds && !is_end_of_simulation(philo))
 	{
 		usleep(500);
 	}

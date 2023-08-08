@@ -1,9 +1,9 @@
 NAME		=	philo
 
-SOURCES		=	main.c					utils/utils.c \
+SOURCES		=	main.c				utils/utils.c \
 			check_for_deads.c		philosopher_states.c \
 			utils/threads_utils.c	init.c \
-
+			utils/philo_states_utils.c 
 
 OBJECTS		= 	$(SOURCES:.c=.o)
 
