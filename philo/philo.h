@@ -6,7 +6,7 @@
 /*   By: stde-la- <stde-la-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 16:28:21 by stde-la-          #+#    #+#             */
-/*   Updated: 2023/02/14 12:40:29 by stde-la-         ###   ########.fr       */
+/*   Updated: 2023/08/13 12:23:55 by stde-la-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,7 @@ int				ft_atoi(char *str, int *status);
 int				now(void);
 t_philosopher	*get_philosopher_to_left(t_philosopher *curr);
 void			wait_time(t_philosopher *philo, double mseconds);
-int				has_eaten_enough(t_philosopher *curr);
 
-void			handle_mutex(pthread_mutex_t *mutex, int *data, int new_value);
 int				start_threads(t_data *data);
 int				join_threads(t_data *data);
 int				is_end_of_simulation(t_philosopher *curr);

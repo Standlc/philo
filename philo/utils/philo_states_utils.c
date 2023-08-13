@@ -15,6 +15,8 @@ void	put_philosopher_status(t_philosopher *curr, char *status)
 
 void	count_philo_meals(t_philosopher *curr)
 {
+	if (curr->rules->required_eat_count == -1)
+		return ;
 	pthread_mutex_lock(&(curr->eating_count_mutex));
 	curr->eating_count += 1;
 	if (curr->eating_count == curr->rules->required_eat_count)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher_states.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stde-la- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: stde-la- <stde-la-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 15:26:35 by stde-la-          #+#    #+#             */
-/*   Updated: 2023/02/15 15:26:36 by stde-la-         ###   ########.fr       */
+/*   Updated: 2023/08/13 13:06:57 by stde-la-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	eat(t_philosopher *left, t_philosopher *curr)
 void	think(t_philosopher *curr)
 {
 	put_philosopher_status(curr, "is thinking");
-	wait_time(curr, 0.5);
+	usleep(500);
 }
 
 void	put_philosopher_to_bed(t_philosopher *curr)

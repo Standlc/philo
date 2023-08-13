@@ -3,21 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   threads_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stde-la- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: stde-la- <stde-la-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 15:26:42 by stde-la-          #+#    #+#             */
-/*   Updated: 2023/02/15 15:26:43 by stde-la-         ###   ########.fr       */
+/*   Updated: 2023/08/13 13:06:58 by stde-la-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
-
-void	handle_mutex(pthread_mutex_t *mutex, int *data, int new_value)
-{
-	pthread_mutex_lock(mutex);
-	*data = new_value;
-	pthread_mutex_unlock(mutex);
-}
 
 int	join_threads(t_data *data)
 {

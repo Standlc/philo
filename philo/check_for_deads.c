@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_for_deads.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stde-la- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: stde-la- <stde-la-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 15:26:26 by stde-la-          #+#    #+#             */
-/*   Updated: 2023/02/15 15:26:27 by stde-la-         ###   ########.fr       */
+/*   Updated: 2023/08/13 12:28:39 by stde-la-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ int	check_eating_counts(t_philosopher *philos, t_rules *rules)
 		return (1);
 	pthread_mutex_lock(philos->philos_finished_eating_mutex);
 	if (*(philos->philos_finished_eating) == rules->amount)
+	{
+		pthread_mutex_unlock(philos->philos_finished_eating_mutex);
 		return (0);
+	}
 	pthread_mutex_unlock(philos->philos_finished_eating_mutex);
 	return (1);
 }

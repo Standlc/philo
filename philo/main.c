@@ -6,7 +6,7 @@
 /*   By: stde-la- <stde-la-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 16:31:30 by stde-la-          #+#    #+#             */
-/*   Updated: 2023/02/14 12:55:16 by stde-la-         ###   ########.fr       */
+/*   Updated: 2023/08/13 13:07:03 by stde-la-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	*routine(void *args)
 	left = get_philosopher_to_left(curr);
 	wait_other_philos(curr);
 	if (curr->id % 2 == 0)
-		wait_time(curr, 0.5);
+		usleep(500);
 	while (!is_end_of_simulation(curr))
 	{
 		take_forks(left, curr);

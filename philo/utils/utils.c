@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stde-la- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: stde-la- <stde-la-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 15:26:48 by stde-la-          #+#    #+#             */
-/*   Updated: 2023/02/15 15:26:49 by stde-la-         ###   ########.fr       */
+/*   Updated: 2023/08/13 12:30:28 by stde-la-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,6 @@ int	ft_atoi(char *str, int *status)
 	else if (*str == '-')
 		*status = NEGATIVE_NB;
 	return (n);
-}
-
-int	has_eaten_enough(t_philosopher *curr)
-{
-	int	result;
-
-	if (curr->rules->required_eat_count == -1)
-		return (0);
-	pthread_mutex_lock(&(curr->eating_count_mutex));
-	result = curr->eating_count == curr->rules->required_eat_count;
-	pthread_mutex_unlock(&(curr->eating_count_mutex));
-	return (result);
 }
 
 void	wait_time(t_philosopher *philo, double mseconds)
