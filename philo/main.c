@@ -23,7 +23,7 @@ void	wait_other_philos(t_philosopher *curr)
 			break ;
 		}
 		pthread_mutex_unlock(&(curr->rules->start_philos_mutex));
-		usleep(1);
+		// usleep(1);
 	}
 	pthread_mutex_lock(&(curr->last_meal_mutex));
 	curr->last_meal_time = curr->rules->starting_time;
@@ -37,7 +37,7 @@ void	*routine(void *args)
 
 	curr = (t_philosopher *)args;
 	left = get_philosopher_to_left(curr);
-	wait_other_philos(curr);
+	// wait_other_philos(curr);
 	if (curr->id % 2 == 0)
 		usleep(500);
 	while (!is_end_of_simulation(curr))

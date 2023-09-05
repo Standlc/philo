@@ -44,7 +44,7 @@ int	start_threads(t_data *data)
 			NULL, routine, &(data->philos[i]));
 		i++;
 	}
-	enable_philos_start(data);
+	// enable_philos_start(data);
 	return (1);
 }
 

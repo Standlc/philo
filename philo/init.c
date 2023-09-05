@@ -14,6 +14,8 @@
 
 int	init_philosopher(t_data *data, t_philosopher *curr, int i)
 {
+	data->philos[i].last_meal_time = data->rules.starting_time;
+
 	data->philos[i].print_mutex = &(data->print_mutex);
 	data->philos[i].is_end_mutex = &(data->is_end_mutex);
 	curr->is_end = &(data->is_end);
@@ -37,6 +39,7 @@ int	create_philos(t_data *data)
 	data->philos = malloc(sizeof(t_philosopher) * data->rules.amount);
 	if (!data->philos)
 		return (printf("malloc error\n"), 1);
+	data->rules.starting_time = now();
 	i = 0;
 	while (i < data->rules.amount)
 	{
