@@ -12,24 +12,6 @@
 
 #include "philo.h"
 
-void	wait_other_philos(t_philosopher *curr)
-{
-	while (1)
-	{
-		pthread_mutex_lock(&(curr->rules->start_philos_mutex));
-		if (curr->rules->start_philos)
-		{
-			pthread_mutex_unlock(&(curr->rules->start_philos_mutex));
-			break ;
-		}
-		pthread_mutex_unlock(&(curr->rules->start_philos_mutex));
-		// usleep(1);
-	}
-	pthread_mutex_lock(&(curr->last_meal_mutex));
-	curr->last_meal_time = curr->rules->starting_time;
-	pthread_mutex_unlock(&(curr->last_meal_mutex));
-}
-
 void	*routine(void *args)
 {
 	t_philosopher	*left;
@@ -37,11 +19,12 @@ void	*routine(void *args)
 
 	curr = (t_philosopher *)args;
 	left = get_philosopher_to_left(curr);
-	// wait_other_philos(curr);
 	if (curr->id % 2 == 0)
 		usleep(500);
 	while (!is_end_of_simulation(curr))
 	{
+		if (curr->rules->amount == 1)
+			return (put_philosopher_status(curr, "has taken a fork"), NULL);
 		take_forks(left, curr);
 		eat(left, curr);
 		put_philosopher_to_bed(curr);

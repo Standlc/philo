@@ -35,18 +35,20 @@ void	put_philosopher_to_bed(t_philosopher *curr)
 	wait_time(curr, curr->rules->time_to_sleep);
 }
 
+void	take_fork(t_philosopher *curr, pthread_mutex_t *fork_mutex)
+{
+	pthread_mutex_lock(fork_mutex);
+	put_philosopher_status(curr, "has taken a fork");
+}
+
 void	take_forks(t_philosopher *left, t_philosopher *curr)
 {
 	if (curr->id % 2 == 0)
 	{
-		pthread_mutex_lock(&(left->fork_mutex));
-		put_philosopher_status(curr, "has taken a fork");
-		pthread_mutex_lock(&(curr->fork_mutex));
-		put_philosopher_status(curr, "has taken a fork");
+		take_fork(curr, &(left->fork_mutex));
+		take_fork(curr, &(curr->fork_mutex));
 		return ;
 	}
-	pthread_mutex_lock(&(curr->fork_mutex));
-	put_philosopher_status(curr, "has taken a fork");
-	pthread_mutex_lock(&(left->fork_mutex));
-	put_philosopher_status(curr, "has taken a fork");
+	take_fork(curr, &(curr->fork_mutex));
+	take_fork(curr, &(left->fork_mutex));
 }

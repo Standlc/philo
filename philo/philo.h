@@ -26,13 +26,12 @@
 
 typedef struct s_rules
 {
-	int	required_eat_count;
-	int	amount;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	starting_time;
-	int	start_philos;
+	int				required_eat_count;
+	int				amount;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				starting_time;
 	pthread_mutex_t	start_philos_mutex;
 }				t_rules;
 
@@ -81,8 +80,9 @@ void			check_for_deads(t_philosopher *philos, t_rules *rules);
 void			give_forks_back(t_philosopher *left, t_philosopher *curr);
 void			count_philo_meals(t_philosopher *curr);
 void			put_philosopher_status(t_philosopher *curr, char *status);
-void			take_forks(t_philosopher *left, t_philosopher *curr);
+void			take_fork(t_philosopher *curr, pthread_mutex_t *fork_mutex);
 void			put_philosopher_to_bed(t_philosopher *curr);
+void			take_forks(t_philosopher *left, t_philosopher *curr);
 void			think(t_philosopher *curr);
 void			eat(t_philosopher *left, t_philosopher *curr);
 

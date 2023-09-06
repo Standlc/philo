@@ -68,8 +68,6 @@ void	check_for_deads(t_philosopher *philos, t_rules *rules)
 			if (get_time_since_last_meal(philos + i) >= rules->time_to_die)
 			{
 				handle_philo_death(philos + i);
-				if (rules->amount == 1)
-					pthread_mutex_unlock(&(philos->fork_mutex));
 				return ;
 			}
 			i++;
