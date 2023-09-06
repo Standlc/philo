@@ -14,9 +14,9 @@
 
 int	init_philosopher(t_data *data, t_philosopher *curr, int i)
 {
-	data->philos[i].last_meal_time = data->rules.starting_time;
 	data->philos[i].print_mutex = &(data->print_mutex);
 	data->philos[i].is_end_mutex = &(data->is_end_mutex);
+	data->philos[i].start_mutex = &(data->start_mutex);
 	curr->is_end = &(data->is_end);
 	data->philos[i].philos_finished_eating_mutex
 		= &(data->philos_finished_eating_mutex);
@@ -82,11 +82,14 @@ int	init_data(t_data *data, int argc, char **argv)
 	int	atoi_status;
 
 	atoi_status = args_to_int(&(data->rules), argc, argv);
+	if (data->rules.required_eat_count == 0)
+		return (printf("arg error: eating count must be positive\n"), 1);
 	if (handle_atoi_status(atoi_status))
 		return (1);
 	if (pthread_mutex_init(&(data->print_mutex), NULL)
 		|| pthread_mutex_init(&(data->is_end_mutex), NULL)
-		|| pthread_mutex_init(&(data->philos_finished_eating_mutex), NULL))
+		|| pthread_mutex_init(&(data->philos_finished_eating_mutex), NULL)
+		|| pthread_mutex_init(&(data->start_mutex), NULL))
 		return (printf("mutex init error\n"), 1);
 	data->is_end = 0;
 	data->philos_finished_eating = 0;

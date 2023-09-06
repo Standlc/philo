@@ -12,6 +12,26 @@
 
 #include "../philo.h"
 
+void	destroy_mutexes(t_data *data, int launched_threads)
+{
+	int	i;
+
+	pthread_mutex_destroy(&(data->is_end_mutex));
+	pthread_mutex_destroy(&(data->start_mutex));
+	pthread_mutex_destroy(&(data->print_mutex));
+	pthread_mutex_destroy(&(data->philos_finished_eating_mutex));
+	if (launched_threads == 0)
+		launched_threads = data->rules.amount;
+	i = 0;
+	while (i < launched_threads)
+	{
+		pthread_mutex_destroy(&(data->philos[i].fork_mutex));
+		pthread_mutex_destroy(&(data->philos[i].last_meal_mutex));
+		pthread_mutex_destroy(&(data->philos[i].eating_count_mutex));
+		i++;
+	}
+}
+
 int	ft_atoi(char *str, int *status)
 {
 	long	n;

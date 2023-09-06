@@ -50,12 +50,14 @@ typedef struct s_philosopher
 	pthread_mutex_t	*philos_finished_eating_mutex;
 	int				*philos_finished_eating;
 	t_rules			*rules;
+	pthread_mutex_t	*start_mutex;
 }				t_philosopher;
 
 typedef struct s_data
 {
 	t_philosopher	*philos;
 	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	start_mutex;
 	pthread_mutex_t	is_end_mutex;
 	int				is_end;
 	pthread_mutex_t	philos_finished_eating_mutex;
@@ -67,9 +69,10 @@ int				ft_atoi(char *str, int *status);
 int				now(void);
 t_philosopher	*get_philosopher_to_left(t_philosopher *curr);
 void			wait_time(t_philosopher *philo, double mseconds);
+void			destroy_mutexes(t_data *data, int launched_threads);
 
 int				start_threads(t_data *data);
-int				join_threads(t_data *data);
+int				join_threads(t_data *data, int launched_threads);
 int				is_end_of_simulation(t_philosopher *curr);
 
 void			*routine(void *args);

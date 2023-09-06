@@ -12,12 +12,14 @@
 
 #include "../philo.h"
 
-int	join_threads(t_data *data)
+int	join_threads(t_data *data, int launched_threads)
 {
 	int	i;
 
+	if (launched_threads == 0)
+		launched_threads = data->rules.amount;
 	i = 0;
-	while (i < data->rules.amount)
+	while (i < launched_threads)
 	{
 		pthread_join(data->philos[i].thread, NULL);
 		i++;
@@ -29,14 +31,26 @@ int	start_threads(t_data *data)
 {
 	int	i;
 
+	pthread_mutex_lock(&(data->start_mutex));
 	i = 0;
 	while (i < data->rules.amount)
 	{
-		pthread_create(&(data->philos[i].thread),
-			NULL, routine, &(data->philos[i]));
+		if (pthread_create(&(data->philos[i].thread),
+				NULL, routine, &(data->philos[i])))
+		{
+			return (i + 1);
+		}
 		i++;
 	}
-	return (1);
+	data->rules.starting_time = now();
+	i = 0;
+	while (i < data->rules.amount)
+	{
+		data->philos[i].last_meal_time = data->rules.starting_time;
+		i++;
+	}
+	pthread_mutex_unlock(&(data->start_mutex));
+	return (0);
 }
 
 int	is_end_of_simulation(t_philosopher *curr)
